@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import App from "./components/App";
+import AuthProvider from "./components/Form/AuthContext";
 
 // 👇️ IMPORTANT: use correct ID of your root element
 // this is the ID of the div in your index.html file
@@ -12,7 +13,9 @@ const root = createRoot(rootElement);
 // const root = createRoot(rootElement!);
 
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+  <AuthProvider>
+    <StrictMode>
+      <App />
+    </StrictMode>
+  </AuthProvider>
 );

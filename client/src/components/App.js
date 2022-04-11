@@ -1,5 +1,10 @@
 import GlobalStyles from "./GlobalStyles";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useParams,
+} from "react-router-dom";
 import Header from "./Header";
 import HomePage from "./HomePage";
 import Profile from "./Profile";
@@ -10,6 +15,8 @@ import CharacterComic from "./CharacterComic";
 import Series from "./Series";
 import Error from "./Error";
 import Comic from "./Comic";
+import Signup from "./Form/Signup";
+import Login from "./Form/Login";
 
 const App = () => {
   return (
@@ -18,8 +25,10 @@ const App = () => {
         <GlobalStyles />
         <Header />
         <Routes>
+          <Route path="/signup" element={<Signup />} exact></Route>
+          <Route path="/login" element={<Login />} exact></Route>
           <Route path="/" element={<HomePage />} exact></Route>
-          <Route path="/profile/:_id" element={<Profile />} exact></Route>
+          <Route path="/profile" element={<Profile />} exact></Route>
           <Route path="/characters" element={<AllCharacters />} exact></Route>
           <Route path="/character/:id" element={<Character />} exact></Route>
           <Route

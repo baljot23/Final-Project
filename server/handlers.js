@@ -76,10 +76,10 @@ const getComic = async (req, res) => {
 
   axios
     .get(
-      `https://gateway.marvel.com/v1/public/comics/${id}?ts=1&apikey=b30f33d632e3caf9525ba38e0cb3ccd7&hash=ceef2233af09fcfd332f2bbb3714bcdc`
+      `https://gateway.marvel.com:443/v1/public/comics/${id}?ts=1&apikey=b30f33d632e3caf9525ba38e0cb3ccd7&hash=ceef2233af09fcfd332f2bbb3714bcdc`
     )
     .then((response) => {
-      console.log(response.data.data.results);
+      console.log(response);
       res
         .status(200)
         .json({ status: 200, data: response.data.data.results, id: id });

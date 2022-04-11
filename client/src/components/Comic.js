@@ -7,11 +7,11 @@ const Comic = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`/comics/${id}`)
+    fetch(`/comic/${id}`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setSingleComic(data.data);
+      .then((json) => {
+        console.log(json);
+        setSingleComic(json.data);
       });
   }, []);
 

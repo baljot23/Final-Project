@@ -32,7 +32,7 @@ express()
   .get("/characters/:offset", getAllCharacters)
   .get("/character/:id", getCharacter)
   .get("/comics/:offset", getAllComics)
-  .get("/comics/:id", getComic)
+  .get("/comic/:id", getComic)
   .get("/character/comic/:id", getCharacterComic)
   .get("/series/:offset", getSeries)
 
