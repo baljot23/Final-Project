@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
+import Favorite from "./Favorite/Favorite";
 
 const Characters = () => {
   const [characters, setCharacters] = useState();
@@ -10,7 +11,7 @@ const Characters = () => {
     fetch("/characters/0")
       .then((res) => res.json())
       .then((data) => {
-        setCharacters(data.data);
+        setCharacters(data?.data);
       });
   }, []);
 
@@ -29,7 +30,7 @@ const Characters = () => {
         {characters?.map((character) => {
           return (
             <CharacterContainer>
-              <ImageContainer to={`/character/${character.id}`}>
+              <ImageContainer to={`/character/${character?.id}`}>
                 <CharacterImage
                   src={
                     character.thumbnail?.path +
@@ -38,8 +39,9 @@ const Characters = () => {
                   }
                 />
               </ImageContainer>
-              <CharacterId>Id: {character.id}</CharacterId>
-              <CharacterName>{character.name}</CharacterName>
+              <Favorite />
+              <CharacterId>Id: {character?.id}</CharacterId>
+              <CharacterName>{character?.name}</CharacterName>
             </CharacterContainer>
           );
         })}

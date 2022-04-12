@@ -1,51 +1,44 @@
 import { useRef, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const ForgotPassword = () => {
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const usernameRef = useRef();
-  const { login } = useAuth();
+  const { restPassword } = useAuth();
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      setMessage("");
       setError("");
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
-      navigate("/");
+      await restPassword(emailRef.current.value);
+      setMessage("Check your inbox for futrher instructions");
     } catch {
-      setError("Failed to log in");
+      setError("Failed to rest password");
     }
     setLoading(false);
   };
   return (
     <>
       <div>
-        <h2>Log In</h2>
+        <h2>Password Reset</h2>
         {error && <alert>{error}</alert>}
+        {message && <alert>{message}</alert>}
         <form onSubmit={handleSubmit}>
-          <label>UserName</label>
-          <input type="username" ref={usernameRef} required />
-
           <label>Email</label>
           <input type="email" ref={emailRef} required />
 
-          <label>Password</label>
-          <input type="password" ref={passwordRef} required />
-
           <button type="submit" disabled={loading}>
-            Log In
+            Rest Password
           </button>
         </form>
         <div>
-          <Link to="/forgot-password">Forgot Password?</Link>
+          <Link to="/login">Log In</Link>
         </div>
       </div>
 
@@ -56,4 +49,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

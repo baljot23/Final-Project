@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import Favorite from "./Favorite/Favorite";
+import { FcLike } from "react-icons/fc";
 
 const Character = () => {
   const [singleCharacter, setSingleCharacter] = useState();
@@ -31,6 +33,7 @@ const Character = () => {
                       character.thumbnail?.extension
                     }
                   />
+                  <FcLike />
                   <div>{character.name}</div>
                   <div>{character.id}</div>
                   <div>{character.description}</div>

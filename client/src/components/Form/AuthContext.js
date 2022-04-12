@@ -23,6 +23,10 @@ const AuthProvider = ({ children }) => {
     return auth.signOut();
   };
 
+  const restPassword = (email) => {
+    return auth.sendPasswordResetEmail(email);
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -32,7 +36,9 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, signup, login, logout }}>
+    <AuthContext.Provider
+      value={{ currentUser, signup, login, logout, restPassword }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

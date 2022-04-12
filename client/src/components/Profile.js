@@ -23,10 +23,10 @@ const Profile = () => {
       <div>
         <h2>Profile</h2>
         {error && <alert>{error}</alert>}
-        <div>Email: {currentUser.email}</div>
-        <div>{console.log(JSON.stringify(currentUser))}</div>
+        <div>Email: {currentUser?.email}</div>
+        <div>id: {currentUser?.uid}</div>
+        <div>{console.log(JSON.stringify(currentUser.uid))}</div>
       </div>
-      <Link to="/update-profile">Update Profile</Link>
       <div>
         <button onClick={handleLogout}>Log Out</button>
       </div>

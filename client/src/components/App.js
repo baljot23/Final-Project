@@ -17,6 +17,7 @@ import Error from "./Error";
 import Comic from "./Comic";
 import Signup from "./Form/Signup";
 import Login from "./Form/Login";
+import ForgotPassword from "./Form/ForgotPassword";
 
 const App = () => {
   return (
@@ -27,6 +28,11 @@ const App = () => {
         <Routes>
           <Route path="/signup" element={<Signup />} exact></Route>
           <Route path="/login" element={<Login />} exact></Route>
+          <Route
+            path="/forgot-password"
+            element={<ForgotPassword />}
+            exact
+          ></Route>
           <Route path="/" element={<HomePage />} exact></Route>
           <Route path="/profile" element={<Profile />} exact></Route>
           <Route path="/characters" element={<AllCharacters />} exact></Route>

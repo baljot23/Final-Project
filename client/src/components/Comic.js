@@ -11,7 +11,7 @@ const Comic = () => {
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        setSingleComic(json.data);
+        setSingleComic(json?.data);
       });
   }, []);
 
@@ -25,11 +25,11 @@ const Comic = () => {
           return (
             <>
               <img
-                src={comic.images[0].path + "." + comic.images[0].extension}
+                src={comic?.images[0]?.path + "." + comic?.images[0]?.extension}
               />
-              <div>Id: {comic.id}</div>
-              <div>Description: {comic.description}</div>
-              <div>Series: {comic.series.name}</div>
+              <div>Id: {comic?.id}</div>
+              <div>Description: {comic?.description}</div>
+              <div>Series: {comic?.series?.name}</div>
             </>
           );
         })}
