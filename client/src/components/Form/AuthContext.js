@@ -1,5 +1,6 @@
+import { addDoc, collection, getDocs, QuerySnapshot } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 export const AuthContext = createContext(null);
 
@@ -10,9 +11,21 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState([]);
 
-  const signup = (email, password) => {
-    return auth.createUserWithEmailAndPassword(email, password);
+  const signup = async (email, password) => {
+    const { user } = await auth.createUserWithEmailAndPassword(email, password);
+    const colRef = collection(db, "users");
+    getDocs(colRef).then((snapshot) => {
+      console.log(snapshot.docs);
+    });
+    if (user) {
+      addDoc(colRef, {
+        title: "first article",
+        author: user.uid,
+        fisrt: "2",
+      }).then((e) => {});
+    }
   };
 
   const login = (email, password) => {
@@ -34,6 +47,21 @@ const AuthProvider = ({ children }) => {
     });
     return unsubscribe;
   }, []);
+
+  // useEffect(() => {
+  //   const getUsersFromFirebase = [];
+  //   const subscriber = db.collection("users").onSnapshot((querySnapshot) => {
+  //     querySnapshot.forEach((doc) => {
+  //       getUsersFromFirebase.push({
+  //         ...doc.data(),
+  //         key: doc.id,
+  //       });
+  //       setUser(getUsersFromFirebase);
+  //       setLoading(false);
+  //     });
+  //   });
+  //   return subscriber();
+  // }, []);
 
   return (
     <AuthContext.Provider

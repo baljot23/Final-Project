@@ -2,50 +2,62 @@ import React, { useRef, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Signup = () => {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
-  const usernameRef = useRef();
-  const { signup } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match");
-    }
+    setError("");
 
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      await signup(email, password);
+
       navigate("/");
     } catch {
       setError("Failed to create an account ");
     }
     setLoading(false);
   };
+
   return (
     <>
       <div>
         <h2>Sign Up</h2>
         {error && <alert>{error}</alert>}
         <form onSubmit={handleSubmit}>
-          <label>UserName</label>
-          <input type="username" ref={usernameRef} required />
+          <label>Name</label>
+          <input
+            type="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
           <label>Email</label>
-          <input type="email" ref={emailRef} required />
-
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
           <label>Password</label>
-          <input type="password" ref={passwordRef} required />
-
-          <label>Password Confirmation</label>
-          <input type="password" ref={passwordConfirmRef} required />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           <button type="submit" disabled={loading}>
             {" "}
             Sign Up

@@ -18,6 +18,8 @@ const Profile = () => {
       setError("Failed to log out");
     }
   };
+
+  console.log(currentUser);
   return (
     <>
       <div>
@@ -25,7 +27,7 @@ const Profile = () => {
         {error && <alert>{error}</alert>}
         <div>Email: {currentUser?.email}</div>
         <div>id: {currentUser?.uid}</div>
-        <div>{console.log(JSON.stringify(currentUser.uid))}</div>
+        <div>Name: {currentUser?.displayName}</div>
       </div>
       <div>
         <button onClick={handleLogout}>Log Out</button>

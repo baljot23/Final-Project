@@ -5,12 +5,9 @@ const Header = () => {
   return (
     <>
       {" "}
-      <Gif
-        height="200%"
-        width="100%"
-        src="https://giphy.com/embed/3GnKKEw2v7bXi"
-        allowfullscreen=""
-      ></Gif>
+      <Gif height="200%" width="100%" allowfullscreen="">
+        Marvel
+      </Gif>
       <Navigation>
         <li>
           <StyledLink to="/">Marvel</StyledLink>
@@ -43,7 +40,11 @@ const Navigation = styled.ul`
   justify-content: center;
 `;
 
-const Gif = styled.iframe`
+const Gif = styled.div`
+  height: 100px;
+  text-align: center;
+  font-size: 30px;
+  color: white;
   background-color: #cc0f0f;
   padding: 0;
 `;
