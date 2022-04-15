@@ -112,82 +112,6 @@ const getSeries = async (req, res) => {
     });
 };
 
-//ProfileInfo:
-
-const getProfile = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-  await client.connect();
-  const db = client.db("Marvel");
-  console.log("connected!");
-  const id = req.params.id;
-  console.log(id);
-
-  const result = await db.collection("data").find().toArray();
-
-  res.status(200).json({ status: 200, data: result });
-
-  client.close();
-};
-
-//Add Infoformation to Profile:
-
-const updateProfile = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-  await client.connect();
-  const db = client.db("Marvel");
-  console.log("connected!");
-  const query = { id: req.params.id };
-  console.log(query);
-
-  let newValues = { query, $set: { name: "jake" } };
-  console.log(newValues);
-
-  const result = await db
-    .collection("data")
-    .insertOne({ name: req.params.name });
-  res
-    .status(200)
-    .json({ status: 200, data: result, message: "Information Updated" });
-
-  client.close();
-};
-//Like a character
-
-const addLike = async (req, res) => {
-  const client = new MongoClient(MONGO_URI, options);
-
-  await client.connect();
-
-  const db = client.db("Marvel");
-
-  console.log("connected!");
-
-  const id = req.params.id;
-
-  const result = await db.collection("data").findOne({ id });
-
-  if (result) {
-    res.status(200).json({
-      status: 200,
-      data: result,
-      _id,
-      message: "Data Added",
-    });
-  } else {
-    res.status(400).json({ status: 400 });
-  }
-
-  client.close();
-};
-
-//Unlike a character
-
-const removeLike = async (req, res) => {
-  // const { like } = req.body;
-  // console.log(like);
-  // res.status(200).json({ status: 200, data: like });
-};
-
 module.exports = {
   getAllCharacters,
   getCharacter,
@@ -195,8 +119,4 @@ module.exports = {
   getComic,
   getCharacterComic,
   getSeries,
-  addLike,
-  removeLike,
-  getProfile,
-  updateProfile,
 };

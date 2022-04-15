@@ -18,7 +18,6 @@ const Movies = () => {
       .then((data) => {
         setSeries([...series, ...data.data]);
       });
-    console.log(series);
   }, [offset]);
 
   console.log(series);
@@ -30,7 +29,6 @@ const Movies = () => {
       <button
         onClick={() => {
           setOffset(offset + 100);
-          console.log(offset);
         }}
       >
         Load More

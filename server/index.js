@@ -12,10 +12,6 @@ const {
   getAllComics,
   getComic,
   getSeries,
-  addLike,
-  removeLike,
-  getProfile,
-  updateProfile,
 } = require("./handlers");
 
 express()
@@ -39,10 +35,6 @@ express()
   .get("/comic/:id", getComic)
   .get("/character/comic/:id", getCharacterComic)
   .get("/series/:offset", getSeries)
-  .get("/profile", getProfile)
-  .post("/profile/:id", updateProfile)
-  .post("/character/like/:id", addLike)
-  .delete("/character/unlike/:id", removeLike)
 
   // ---------------------------------
   // Nothing to modify below this line

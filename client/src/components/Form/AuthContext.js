@@ -14,18 +14,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState([]);
 
   const signup = async (email, password) => {
-    const { user } = await auth.createUserWithEmailAndPassword(email, password);
-    const colRef = collection(db, "users");
-    getDocs(colRef).then((snapshot) => {
-      console.log(snapshot.docs);
-    });
-    if (user) {
-      addDoc(colRef, {
-        title: "first article",
-        author: user.uid,
-        fisrt: "2",
-      }).then((e) => {});
-    }
+    await auth.createUserWithEmailAndPassword(email, password);
   };
 
   const login = (email, password) => {
@@ -47,21 +36,6 @@ const AuthProvider = ({ children }) => {
     });
     return unsubscribe;
   }, []);
-
-  // useEffect(() => {
-  //   const getUsersFromFirebase = [];
-  //   const subscriber = db.collection("users").onSnapshot((querySnapshot) => {
-  //     querySnapshot.forEach((doc) => {
-  //       getUsersFromFirebase.push({
-  //         ...doc.data(),
-  //         key: doc.id,
-  //       });
-  //       setUser(getUsersFromFirebase);
-  //       setLoading(false);
-  //     });
-  //   });
-  //   return subscriber();
-  // }, []);
 
   return (
     <AuthContext.Provider

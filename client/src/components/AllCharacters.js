@@ -19,7 +19,7 @@ const Characters = () => {
     fetch(`/characters/${offset}`)
       .then((res) => res.json())
       .then((data) => {
-        setCharacters([...characters, ...data.data]);
+        setCharacters([...characters, ...data?.data]);
       });
   }, [offset]);
 
@@ -49,7 +49,6 @@ const Characters = () => {
       <button
         onClick={() => {
           setOffset(offset + 100);
-          console.log(offset);
         }}
       >
         Load More

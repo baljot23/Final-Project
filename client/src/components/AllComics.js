@@ -11,7 +11,7 @@ const Comics = () => {
     fetch("/comics/0")
       .then((res) => res.json())
       .then((data) => {
-        setComics(data.data);
+        setComics(data?.data);
       });
   }, []);
 
@@ -19,7 +19,7 @@ const Comics = () => {
     fetch(`/comics/${offset}`)
       .then((res) => res.json())
       .then((data) => {
-        setComics([...comics, ...data.data]);
+        setComics([...comics, ...data?.data]);
       });
   }, [offset]);
 
@@ -32,15 +32,15 @@ const Comics = () => {
             console.log(comic);
             return (
               <ComicContainer>
-                <ImageContainer to={`/comics/${comic.id}`}>
+                <ImageContainer to={`/comics/${comic?.id}`}>
                   <ComicImage
                     src={
                       comic.thumbnail?.path + "." + comic.thumbnail?.extension
                     }
                   />
                 </ImageContainer>
-                <ComicId>Id: {comic.id}</ComicId>
-                <ComicTitle>{comic.title}</ComicTitle>
+                <ComicId>Id: {comic?.id}</ComicId>
+                <ComicTitle>{comic?.title}</ComicTitle>
               </ComicContainer>
             );
           })}

@@ -10,12 +10,12 @@ const Comic = () => {
     fetch(`/comic/${id}`)
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
         setSingleComic(json?.data);
       });
   }, []);
 
-  console.log(singleComic);
+  // console.log(singleComic);
 
   return (
     <>
@@ -23,14 +23,14 @@ const Comic = () => {
         {singleComic?.map((comic) => {
           console.log(comic);
           return (
-            <>
+            <div key={comic.id}>
               <img
                 src={comic?.images[0]?.path + "." + comic?.images[0]?.extension}
               />
               <div>Id: {comic?.id}</div>
               <div>Description: {comic?.description}</div>
               <div>Series: {comic?.series?.name}</div>
-            </>
+            </div>
           );
         })}
       </div>
