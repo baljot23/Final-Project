@@ -1,15 +1,13 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../firebase";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState("");
-  const [name, setName] = useState("");
   const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -37,13 +35,13 @@ const Signup = () => {
         <h2>Sign Up</h2>
         {error && <alert>{error}</alert>}
         <form onSubmit={handleSubmit}>
-          <label>Name</label>
-          <input
-            type="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+          {/* <label>Name</label> */}
+          {/* <input
+            type="displayName"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
             required
-          />
+          /> */}
           <label>Email</label>
           <input
             type="email"

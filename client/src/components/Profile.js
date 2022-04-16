@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "./Form/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [error, setError] = useState("");
+  const [photoURL, setPhotoURL] = useState();
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -18,6 +19,12 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (currentUser?.photoURL) {
+      setPhotoURL(currentUser.photoURL);
+    }
+  }, [currentUser]);
+  console.log(currentUser, currentUser.photoURL);
   return (
     <>
       <div>
@@ -25,10 +32,10 @@ const Profile = () => {
         {error && <alert>{error}</alert>}
         <div>Email: {currentUser?.email}</div>
         <div>id: {currentUser?.uid}</div>
-        <div>Name: {currentUser?.displayName}</div>
       </div>
       <div>
         <button onClick={handleLogout}>Log Out</button>
+        <img src={photoURL} />
       </div>
     </>
   );

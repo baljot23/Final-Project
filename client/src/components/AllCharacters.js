@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link, useParams } from "react-router-dom";
-import Favorite from "./Favorite/Favorite";
+import { Link } from "react-router-dom";
 
 const Characters = () => {
   const [characters, setCharacters] = useState();
@@ -39,7 +38,6 @@ const Characters = () => {
                   }
                 />
               </ImageContainer>
-              <Favorite />
               <CharacterId>Id: {character?.id}</CharacterId>
               <CharacterName>{character?.name}</CharacterName>
             </CharacterContainer>

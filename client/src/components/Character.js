@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { AuthContext } from "./Form/AuthContext";
+import CommentPost from "./CommentPost";
 
 const Character = () => {
   const [singleCharacter, setSingleCharacter] = useState();
@@ -36,13 +37,11 @@ const Character = () => {
       let likedbyUsers = [];
 
       snapshot.docs.forEach((document) => {
-        console.log("hello");
-        if (document.data().id === id) {
+        if (document.data().CharacterId === id) {
           setDocRef(doc(db, "users", document.id));
           likedbyUsers.push(document.data().likedBy);
         }
       });
-
       setUser([...likedbyUsers]);
     });
   }, [reload]);
@@ -53,16 +52,18 @@ const Character = () => {
     setReload(!reload);
     if (!user?.includes(currentUser.uid)) {
       addDoc(colRef, {
-        id: id,
+        CharacterId: id,
         likedBy: currentUser.uid,
-      }).then((e) => {
-        console.log("liked");
-      });
+        displayName: "",
+      }).then((e) => {});
     } else {
-      deleteDoc(docRef).then((e) => {
-        console.log("unliked");
-      });
+      deleteDoc(docRef).then((e) => {});
     }
+  };
+
+  const handleComment = () => {
+    setReload(!reload);
+    addDoc(colRef, {});
   };
 
   return (
@@ -95,6 +96,7 @@ const Character = () => {
                   <FcLike />
                   Like this charater
                 </button>
+                <CommentPost />
               </div>
             </>
           );

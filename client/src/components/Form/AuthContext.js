@@ -1,6 +1,5 @@
-import { addDoc, collection, getDocs, QuerySnapshot } from "firebase/firestore";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, db } from "../firebase";
+import { auth } from "../firebase";
 
 export const AuthContext = createContext(null);
 
@@ -11,7 +10,6 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState([]);
 
   const signup = async (email, password) => {
     await auth.createUserWithEmailAndPassword(email, password);
