@@ -9,6 +9,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { AuthContext } from "./Form/AuthContext";
@@ -16,8 +17,9 @@ import CommentPost from "./CommentPost";
 
 const Character = () => {
   const [singleCharacter, setSingleCharacter] = useState();
-  const [user, setUser] = useState(false);
-  const [reload, setReload] = useState(false);
+  const [comment, setComment] = useState("");
+  const [user, setUser] = useState([]);
+  const [reload, setReload] = useState(true);
   const [docRef, setDocRef] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const { id } = useParams();
@@ -32,38 +34,64 @@ const Character = () => {
 
   const colRef = collection(db, "users");
 
-  useEffect(() => {
+  const handleUnlike = () => {
     getDocs(colRef).then((snapshot) => {
-      let likedbyUsers = [];
-
       snapshot.docs.forEach((document) => {
+        const documentRef = doc(db, "users", document.id);
+        const likedArr = document
+          .data()
+          .likedbyUsers.filter((id) => currentUser.uid !== id);
         if (document.data().CharacterId === id) {
-          setDocRef(doc(db, "users", document.id));
-          likedbyUsers.push(document.data().likedBy);
+          updateDoc(documentRef, {
+            CharacterId: id,
+            likedbyUsers: [...likedArr],
+          });
         }
       });
-      setUser([...likedbyUsers]);
     });
-  }, [reload]);
+    setReload(true);
+  };
 
-  console.log(docRef);
+  const createDocument = () => {
+    addDoc(colRef, {
+      CharacterId: id,
+      likedbyUsers: [currentUser.uid],
+    }).then((e) => {});
+    setReload(false);
+  };
 
-  const handleLike = () => {
-    setReload(!reload);
-    if (!user?.includes(currentUser.uid)) {
-      addDoc(colRef, {
-        CharacterId: id,
-        likedBy: currentUser.uid,
-        displayName: "",
-      }).then((e) => {});
-    } else {
-      deleteDoc(docRef).then((e) => {});
+  const updateDocument = (document, likedbyUsers) => {
+    const documentRef = doc(db, "users", document.id);
+    if (document.data().CharacterId === id) {
+      likedbyUsers.push(document.data().likedByUsers);
+      if (!document.data().likedbyUsers.length) {
+        updateDoc(documentRef, {
+          CharacterId: id,
+          likedbyUsers: [currentUser.uid],
+        });
+      } else {
+        updateDoc(documentRef, {
+          CharacterId: id,
+          likedbyUsers: [currentUser.uid, ...likedbyUsers],
+        });
+      }
     }
   };
 
-  const handleComment = () => {
-    setReload(!reload);
-    addDoc(colRef, {});
+  const handleLike = () => {
+    getDocs(colRef).then((snapshot) => {
+      if (!snapshot.docs.filter((e) => e.CharacterId === id).length > 0) {
+        createDocument();
+      } else {
+        let likedbyUsers = [];
+        snapshot.docs.forEach((document) => {
+          updateDocument(document, likedbyUsers);
+        });
+        setUser([...likedbyUsers]);
+      }
+    });
+
+    setReload(false);
   };
 
   return (
@@ -92,7 +120,9 @@ const Character = () => {
                     return <li>{comics?.name}</li>;
                   })}
                 </ul>
-                <button onClick={() => handleLike()}>
+                <button
+                  onClick={() => (reload ? handleLike() : handleUnlike())}
+                >
                   <FcLike />
                   Like this charater
                 </button>

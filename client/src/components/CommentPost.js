@@ -1,72 +1,76 @@
-import React, { useState, useRef } from "react";
-
-// const INITIAL_HEIGHT = 46;
+import React, { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "./firebase";
+import { AuthContext, currentUser } from "./Form/AuthContext";
 
 const CommentPost = () => {
-  //   const [isExpanded, setIsExpanded] = useState(false);
-  //   const [commentValue, setCommentValue] = useState("");
-  //   const outerHeight = useRef(INITIAL_HEIGHT);
-  //   const textRef = useRef(null);
-  //   const containerRef = useRef(null);
-  //   useDynamicHeightField(textRef, commentValue);
-  //   const onExpand = () => {
-  //     if (!isExpanded) {
-  //       outerHeight.current = containerRef.current.scrollHeight;
-  //       setIsExpanded(true);
-  //     }
-  //   };
-  //   const onChange = (e) => {
-  //     setCommentValue(e.target.value);
-  //   };
-  //   const onClose = () => {
-  //     setCommentValue("");
-  //     setIsExpanded(false);
-  //   };
-  //   const onSubmit = (e) => {
-  //     e.preventDefault();
-  //     console.log("send the form data somewhere");
-  //   };
-  //   return (
-  //     <div className="container">
-  //       <form
-  //         onSubmit={onSubmit}
-  //         ref={containerRef}
-  //         style={{
-  //           minHeight: isExpanded ? outerHeight.current : INITIAL_HEIGHT,
-  //         }}
-  //       >
-  //         <div className="header">
-  //           <div className="user">
-  //             <img
-  //               src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/df/df7789f313571604c0e4fb82154f7ee93d9989c6.jpg"
-  //               alt="User avatar"
-  //             />
-  //             <span>User Name</span>
-  //           </div>
-  //         </div>
-  //         <label htmlFor="comment">What are your thoughts?</label>
-  //         <textarea
-  //           ref={textRef}
-  //           onClick={onExpand}
-  //           onFocus={onExpand}
-  //           onChange={onChange}
-  //           className="comment-field"
-  //           placeholder="What are your thoughts?"
-  //           value={commentValue}
-  //           name="comment"
-  //           id="comment"
-  //         />
-  //         <div className="actions">
-  //           <button type="button" className="cancel" onClick={onClose}>
-  //             Cancel
-  //           </button>
-  //           <button type="submit" disabled={commentValue.length < 1}>
-  //             Respond
-  //           </button>
-  //         </div>
-  //       </form>
-  //     </div>
-  //   );
+  const [comment, setComment] = useState("");
+  const [user, setUser] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [docRef, setDocRef] = useState(null);
+  const { currentUser } = useContext(AuthContext);
+  const { id } = useParams();
+
+  const colRef = collection(db, "users");
+  const handleChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handlePost = () => {
+    getDocs(colRef).then((snapshot) => {
+      console.log(snapshot.docs);
+      if (!snapshot.docs.length) {
+        addDoc(colRef, {
+          CharacterId: id,
+          comments: [{ id: currentUser.uid, comment: comment }],
+        });
+      }
+      snapshot.docs.forEach((document) => {
+        const currentDoc = doc(db, "users", document.id);
+        let comments;
+        if (document.data().comments) {
+          comments = [...document.data().comments];
+        } else {
+          comments = [];
+        }
+        if (document.data().CharacterId === id) {
+          updateDoc(currentDoc, {
+            comments: [{ id: currentUser.uid, comment: comment }, ...comments],
+          });
+        } else {
+          addDoc(colRef, {
+            comments: [{ id: currentUser.uid, comment: comment }],
+          });
+        }
+      });
+    });
+  };
+
+  return (
+    <form>
+      <input value={comment} onChange={handleChange} />
+      <div>
+        <button
+          onClick={() => {
+            handlePost();
+          }}
+          type="button"
+          disabled={!comment}
+        >
+          Post
+        </button>
+        <button onClick={() => {}}>Cancel</button>
+      </div>
+    </form>
+  );
 };
 
 export default CommentPost;

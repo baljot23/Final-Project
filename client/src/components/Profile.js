@@ -19,12 +19,6 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    if (currentUser?.photoURL) {
-      setPhotoURL(currentUser.photoURL);
-    }
-  }, [currentUser]);
-  console.log(currentUser, currentUser.photoURL);
   return (
     <>
       <div>
