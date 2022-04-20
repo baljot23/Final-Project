@@ -112,6 +112,19 @@ const getSeries = async (req, res) => {
     });
 };
 
+//Get Most Recent Characters
+
+const getRecentCharacters = async (req, res) => {
+  axios
+    .get(
+      `https://gateway.marvel.com/v1/public/characters?ts=1&modifiedSince=2021-12-21T10:35:15-040&apikey=b30f33d632e3caf9525ba38e0cb3ccd7&hash=ceef2233af09fcfd332f2bbb3714bcdc`
+    )
+    .then((response) => {
+      console.log(response.data.data.results);
+      res.status(200).json({ status: 200, data: response.data.data.results });
+    });
+};
+
 module.exports = {
   getAllCharacters,
   getCharacter,
@@ -119,4 +132,5 @@ module.exports = {
   getComic,
   getCharacterComic,
   getSeries,
+  getRecentCharacters,
 };

@@ -24,45 +24,68 @@ const Characters = () => {
         setCharacters([...characters, ...data?.data]);
       });
   }, [offset]);
+
   return (
-    <Wrapper>
-      <div>Characters from A-Z:</div>
-      <Container>
-        {characters?.map((character) => {
-          let imgSrc;
-          if (character.thumbnail.path.includes("not")) {
-            imgSrc = Marvel;
-          } else {
-            imgSrc =
-              character.thumbnail?.path + "." + character.thumbnail?.extension;
-          }
-          return (
-            <CardContainer to={`/character/${character?.id}`}>
-              <CardInner className={!flipped ? "flipped" : ""}>
-                <CardFront>
-                  <CharacterId>Id:{character?.id}</CharacterId>
-                  <CharacterName>{character?.name}</CharacterName>
-                </CardFront>
-                <CardBack>
-                  <ImageContainer>
-                    <CharacterImage src={imgSrc} />
-                  </ImageContainer>
-                </CardBack>
-              </CardInner>
-            </CardContainer>
-          );
-        })}
-      </Container>
-      <button
-        onClick={() => {
-          setOffset(offset + 100);
-        }}
-      >
-        Load More
-      </button>
-    </Wrapper>
+    <div>
+      {characters ? (
+        <Wrapper>
+          <AllCharacters>Characters from A-Z:</AllCharacters>
+          <Container>
+            {characters?.map((character) => {
+              let imgSrc;
+              if (character?.thumbnail?.path?.includes("not")) {
+                imgSrc = Marvel;
+              } else {
+                imgSrc =
+                  character.thumbnail?.path +
+                  "." +
+                  character.thumbnail?.extension;
+              }
+              return (
+                <CardContainer to={`/character/${character?.id}`}>
+                  <CardInner className={!flipped ? "flipped" : ""}>
+                    <CardFront>
+                      <CharacterId>Id:{character?.id}</CharacterId>
+                      <CharacterName>{character?.name}</CharacterName>
+                      <CharacterModified>
+                        Modified Since:{character?.modified}
+                      </CharacterModified>
+                    </CardFront>
+                    <CardBack>
+                      <ImageContainer>
+                        <CharacterImage src={imgSrc} />
+                      </ImageContainer>
+                    </CardBack>
+                  </CardInner>
+                </CardContainer>
+              );
+            })}
+          </Container>
+          <button
+            onClick={() => {
+              setOffset(offset + 100);
+            }}
+          >
+            Load More
+          </button>
+        </Wrapper>
+      ) : (
+        <Loader></Loader>
+      )}
+    </div>
   );
 };
+
+const CharacterModified = styled.div`
+  margin-bottom: 10px;
+`;
+
+const AllCharacters = styled.div`
+  text-align: left;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-left: 45px;
+`;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -196,6 +219,25 @@ const CharacterId = styled.div`
 `;
 const CharacterName = styled.div`
   margin-bottom: 50%;
+`;
+
+const Loader = styled.div`
+  border: 10px solid #c586c0;
+  border-top: 10px solid red;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  margin-left: 50%;
+  margin-top: 10%;
 `;
 
 export default Characters;

@@ -19,7 +19,7 @@ const Login = () => {
       setError("");
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
-      navigate("/");
+      navigate("/home");
     } catch {
       setError("Failed to log in");
     }
@@ -27,47 +27,55 @@ const Login = () => {
   };
   return (
     <>
-      <Wrapper>
-        <Container>
-          <LogIn>Log In</LogIn>
-          {error && <alert>{error}</alert>}
-          <form onSubmit={handleSubmit}>
-            <SubContainer>
-              <Label>Email</Label>
-              <input type="email" ref={emailRef} required />
-            </SubContainer>{" "}
-            <SubContainer>
-              <Label>Password</Label>
-              <input type="password" ref={passwordRef} required />
-            </SubContainer>
-            <LoginButton type="submit" disabled={loading}>
-              Log In
-            </LoginButton>
-          </form>
-          <Forgotpassword>
-            <Link to="/forgot-password">Forgot Password?</Link>
-          </Forgotpassword>
-        </Container>
-
-        <SignUp>
-          Need an account? <Link to="/">Sign Up</Link>
-        </SignUp>
-      </Wrapper>
+      <div
+        style={{
+          backgroundColor: "#c7ceea",
+          height: "100vh",
+          width: "100vw;",
+        }}
+      >
+        <Wrapper>
+          <Container>
+            <LogIn>Log In</LogIn>
+            {error && <alert>{error}</alert>}
+            <form onSubmit={handleSubmit}>
+              <SubContainer>
+                <Label>Email</Label>
+                <input type="email" ref={emailRef} required />
+              </SubContainer>{" "}
+              <SubContainer>
+                <Label>Password</Label>
+                <input type="password" ref={passwordRef} required />
+              </SubContainer>
+              <LoginButton type="submit" disabled={loading}>
+                Log In
+              </LoginButton>
+            </form>
+            <Forgotpassword>
+              <Link to="/forgot-password">Forgot Password?</Link>
+            </Forgotpassword>
+            <SignUp>
+              Need an account? <Link to="/">Sign Up</Link>
+            </SignUp>
+          </Container>
+        </Wrapper>
+      </div>
     </>
   );
 };
 const Wrapper = styled.div`
-  border: 3px solid black;
   height: 30vh;
   width: 5%;
   display: flex;
   flex-direction: column;
-  margin-left: 35%;
-  margin-top: 5%;
+  margin-left: 30%;
   padding: 10%;
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  border: 3px solid black;
+  width: 20vw;
+`;
 
 const SubContainer = styled.div`
   display: flex;
@@ -77,32 +85,33 @@ const SubContainer = styled.div`
 
 const Label = styled.label`
   margin: 20px 15px 20px 0px;
-
   padding: 20px 5px 10px 0px;
 `;
 
 const LogIn = styled.h2`
+  padding-top: 10px;
   text-align: center;
+  font-weight: bold;
 `;
 const LoginButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 10px;
-  margin-left: 15%;
-  width: 100%;
+  margin-left: 25%;
+  width: 50%;
   height: 40px;
   background-color: black;
   color: white;
 `;
 const SignUp = styled.div`
   text-align: center;
-  margin-top: 15px;
-  margin-left: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 `;
 
 const Forgotpassword = styled.div`
   text-align: center;
-  margin-top: 15px;
-  margin-left: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 `;
 export default Login;

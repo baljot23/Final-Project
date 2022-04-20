@@ -12,6 +12,7 @@ const {
   getAllComics,
   getComic,
   getSeries,
+  getRecentCharacters,
 } = require("./handlers");
 
 express()
@@ -35,6 +36,7 @@ express()
   .get("/comic/:id", getComic)
   .get("/character/comic/:id", getCharacterComic)
   .get("/series/:offset", getSeries)
+  .get("/api/characters/recent", getRecentCharacters)
 
   // ---------------------------------
   // Nothing to modify below this line

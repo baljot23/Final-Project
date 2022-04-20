@@ -1,13 +1,13 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import Marvel from "../Pictures/Marvel4.jpg";
+import Marvel from "../Pictures/Marvel2.jpg";
 
 const Header = () => {
   return (
     <>
-      {/* <Wrapper>
+      <Wrapper>
         <MarvelBannerImage src={Marvel} />
-      </Wrapper> */}
+      </Wrapper>
       <Navigation>
         <li>
           <StyledLink to="/home">Marvel</StyledLink>
@@ -30,22 +30,22 @@ const Header = () => {
 };
 
 const Wrapper = styled.div`
-  width: 50vw;
   height: 50vh;
+  background-color: black;
 `;
 
 const MarvelBannerImage = styled.img`
   height: 50vh;
   width: 100vw;
-  position: relative;
-  object-fit: cover;
+  position: absolute;
+  object-fit: contain;
 `;
 const Navigation = styled.ul`
   text-decoration: none;
   background-color: black;
   display: flex;
   width: 100%;
-  height: 50px;
+  height: 40px;
   padding-top: 10px;
   justify-content: center;
 `;

@@ -50,7 +50,9 @@ const Character = () => {
           document.data().likedBy &&
             likedbyUsers.push(document.data().likedBy.id);
           document.data().comments &&
-            likedbyUsers.push(document.data().comments.id);
+            document.data().comments.forEach((eachComment) => {
+              likedbyUsers.push(eachComment.id);
+            });
         }
       });
 
@@ -59,7 +61,6 @@ const Character = () => {
   }, [reload]);
 
   const handleLike = () => {
-    console.log(user);
     setReload(!reload);
     if (user?.includes(currentUser.uid)) {
       getDocs(colRef).then((snapshot) => {
@@ -71,10 +72,10 @@ const Character = () => {
             document.data().comments &&
             document.data().likedBy
           ) {
-            console.log(document.data().likedBy.isLiked);
             updateDoc(documentRef, {
               likedBy: {
                 id: currentUser.uid,
+                UserName: currentUser.displayName,
                 isLiked: !document.data().likedBy.isLiked,
                 CharacterName,
                 CharacterImg,
@@ -87,6 +88,7 @@ const Character = () => {
             updateDoc(documentRef, {
               likedBy: {
                 id: currentUser.uid,
+                UserName: currentUser.displayName,
                 isLiked: true,
                 CharacterName,
                 CharacterImg,
@@ -98,11 +100,12 @@ const Character = () => {
         });
       });
     } else {
-      console.log("here");
       addDoc(colRef, {
         CharacterId: id,
+        UserId: currentUser.uid,
         likedBy: {
           id: currentUser.uid,
+          UserName: currentUser.displayName,
           isLiked: true,
           CharacterName,
           CharacterImg,
@@ -119,32 +122,36 @@ const Character = () => {
         {singleCharacter?.map((character) => {
           return (
             <>
-              <div>
-                <ComicCharacterLink to={`/character/comic/${character?.id}`}>
-                  <CharacterImage
-                    src={
-                      character?.thumbnail?.path +
-                      "." +
-                      character?.thumbnail?.extension
-                    }
-                  />
-
-                  <div>Character Name: {character?.name}</div>
-                  <div>Id: {character?.id}</div>
-                  <div>{character?.description}</div>
-                </ComicCharacterLink>
-
-                <ul>
-                  {character?.comics?.items.map((comics) => {
-                    return <li>{comics?.name}</li>;
-                  })}
-                </ul>
-                <button onClick={() => handleLike()}>
-                  <FcLike />
-                  Like this charater
-                </button>
-                <CommentPost />
-              </div>
+              {character ? (
+                <div>
+                  <ComicCharacterLink to={`/character/comic/${character?.id}`}>
+                    <CharacterImage
+                      src={
+                        character?.thumbnail?.path +
+                        "." +
+                        character?.thumbnail?.extension
+                      }
+                    />
+                  </ComicCharacterLink>
+                  <InfoContainer>
+                    <div>Character Name: {character?.name}</div>
+                    <div>Id: {character?.id}</div>
+                    <div>{character?.description}</div>
+                    <ul>
+                      {character?.comics?.items.map((comics) => {
+                        return <li>{comics?.name}</li>;
+                      })}
+                    </ul>
+                  </InfoContainer>
+                  <Button onClick={() => handleLike()}>
+                    <FcLike />
+                    Like this charater
+                  </Button>
+                  <CommentPost singleCharacter={singleCharacter} />
+                </div>
+              ) : (
+                <Loader></Loader>
+              )}
             </>
           );
         })}
@@ -153,13 +160,48 @@ const Character = () => {
   );
 };
 
+const Button = styled.button`
+  height: auto;
+  max-height: 250px;
+  width: 15%;
+  margin: 100px 50px 0px 50px;
+`;
+const InfoContainer = styled.div`
+  height: auto;
+  max-height: 250px;
+  width: 50%;
+  margin: 50px;
+`;
 const ComicCharacterLink = styled(Link)``;
 
 const CharacterImage = styled.img`
   height: auto;
   max-height: 250px;
-  width: auto;
   max-width: 250px;
+  width: 320px;
+  border: 1px solid lightblue;
+  margin: 50px;
+  display: flex;
+  flex-direction: row;
+`;
+
+const Loader = styled.div`
+  border: 10px solid black;
+  border-top: 10px solid blue;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  margin-left: 40%;
+  margin-top: 10%;
 `;
 
 const SeriesLink = styled(Link)``;

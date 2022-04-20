@@ -1,11 +1,5 @@
 import GlobalStyles from "./GlobalStyles";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useParams,
-} from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Header";
 import HomePage from "./HomePage";
 import Profile from "./Profile";
@@ -19,7 +13,6 @@ import Comic from "./Comic";
 import Signup from "./Form/Signup";
 import Login from "./Form/Login";
 import ForgotPassword from "./Form/ForgotPassword";
-import styled from "styled-components";
 
 const App = () => {
   return (

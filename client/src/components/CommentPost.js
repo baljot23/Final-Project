@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   updateDoc,
@@ -12,13 +11,14 @@ import { db } from "./firebase";
 import { AuthContext } from "./Form/AuthContext";
 import styled from "styled-components";
 
-const CommentPost = () => {
+const CommentPost = ({ singleCharacter }) => {
   const [comment, setComment] = useState("");
   const { currentUser } = useContext(AuthContext);
   const { id } = useParams();
   const [user, setUser] = useState([]);
   const [reload, setReload] = useState(true);
   const [docRef, setDocRef] = useState(null);
+  const [userData, setUserData] = useState();
 
   const colRef = collection(db, "users");
   const handleChange = (e) => {
@@ -35,7 +35,10 @@ const CommentPost = () => {
           document.data().likedBy &&
             commentsByUser.push(document.data().likedBy.id);
           document.data().comments &&
-            commentsByUser.push(document.data().comments.id);
+            document.data().comments.forEach((eachComment) => {
+              console.log(eachComment.id);
+              commentsByUser.push(eachComment.id);
+            });
         }
       });
 
@@ -45,25 +48,50 @@ const CommentPost = () => {
 
   const handlePost = () => {
     setReload(!reload);
-    console.log(user);
     if (user?.includes(currentUser.uid)) {
       getDocs(colRef).then((snapshot) => {
         snapshot.docs.forEach((document) => {
           const documentRef = doc(db, "users", document.id);
+          if (document.data().UserId !== currentUser.uid) {
+            return;
+          }
 
           if (
             document.data().CharacterId === id &&
             (document.data().likedBy || document.data().comments)
           ) {
+            let newComment = null;
+            if (document.data().comments) {
+              newComment = document.data().comments;
+              newComment.push({
+                id: currentUser.uid,
+                comment: comment,
+                CharacterId: document.data().CharacterId,
+              });
+            } else {
+              newComment = [
+                {
+                  id: currentUser.uid,
+                  comment: comment,
+                  CharacterId: document.data().CharacterId,
+                },
+              ];
+            }
             updateDoc(documentRef, {
-              comments: { id: currentUser.uid, comment: comment },
+              comments: newComment,
             });
           } else if (
             document.data().CharacterId === id &&
             !document.data().comments
           ) {
             updateDoc(documentRef, {
-              comments: { id: currentUser.uid, comment: comment },
+              comments: [
+                {
+                  id: currentUser.uid,
+                  comment: comment,
+                  CharacterId: document.data().CharacterId,
+                },
+              ],
             }).then((e) => {
               console.log("liked");
             });
@@ -71,16 +99,35 @@ const CommentPost = () => {
         });
       });
     } else {
-      console.log("here");
       addDoc(colRef, {
         CharacterId: id,
-        comments: { id: currentUser.uid, comment: comment },
+        UserId: currentUser.uid,
+        comments: [
+          {
+            id: currentUser.uid,
+            comment: comment,
+            CharacterId: document.data().CharacterId,
+          },
+        ],
       }).then((e) => {
         console.log("liked");
       });
     }
   };
 
+  useEffect(() => {
+    getDocs(colRef).then((snapshot) => {
+      setUserData(
+        snapshot?.docs?.map((document) => {
+          return document.data();
+        })
+      );
+    });
+  }, []);
+
+  const CharacterId = singleCharacter?.map((Character) => {
+    return Character?.id;
+  });
   return (
     <>
       <DetailBox>
@@ -100,10 +147,50 @@ const CommentPost = () => {
           </CommentButtons>
         </form>
       </DetailBox>
+      <div>
+        {userData?.map((data) => {
+          return (
+            <>
+              {data?.comments?.map((eachComment) => {
+                return (
+                  <div>
+                    {eachComment?.CharacterId?.includes(CharacterId) ? (
+                      <CommentContainer>
+                        <Comments>
+                          <CommentUserName>
+                            Comment By {data?.likedBy?.UserName}:
+                          </CommentUserName>
+                          {eachComment?.comment}
+                        </Comments>
+                      </CommentContainer>
+                    ) : (
+                      <div></div>
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          );
+        })}
+      </div>
     </>
   );
 };
 
+const CommentContainer = styled.div``;
+const CommentUserName = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+`;
+const Comments = styled.div`
+  width: 320px;
+  border: 1px solid lightblue;
+  margin: 50px;
+  flex-direction: row;
+  background-color: lightblue;
+  padding: 5px;
+`;
 const DetailBox = styled.div`
   width: 320px;
   border: 1px solid lightblue;
