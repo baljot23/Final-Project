@@ -9,68 +9,139 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { AuthContext, currentUser } from "./Form/AuthContext";
+import { AuthContext } from "./Form/AuthContext";
+import styled from "styled-components";
 
 const CommentPost = () => {
   const [comment, setComment] = useState("");
-  const [user, setUser] = useState(false);
-  const [reload, setReload] = useState(false);
-  const [docRef, setDocRef] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const { id } = useParams();
+  const [user, setUser] = useState([]);
+  const [reload, setReload] = useState(true);
+  const [docRef, setDocRef] = useState(null);
 
   const colRef = collection(db, "users");
   const handleChange = (e) => {
     setComment(e.target.value);
   };
 
-  const handlePost = () => {
+  useEffect(() => {
     getDocs(colRef).then((snapshot) => {
-      console.log(snapshot.docs);
-      if (!snapshot.docs.length) {
-        addDoc(colRef, {
-          CharacterId: id,
-          comments: [{ id: currentUser.uid, comment: comment }],
-        });
-      }
+      let commentsByUser = [];
+
       snapshot.docs.forEach((document) => {
-        const currentDoc = doc(db, "users", document.id);
-        let comments;
-        if (document.data().comments) {
-          comments = [...document.data().comments];
-        } else {
-          comments = [];
-        }
         if (document.data().CharacterId === id) {
-          updateDoc(currentDoc, {
-            comments: [{ id: currentUser.uid, comment: comment }, ...comments],
-          });
-        } else {
-          addDoc(colRef, {
-            comments: [{ id: currentUser.uid, comment: comment }],
-          });
+          setDocRef(doc(db, "users", document.id));
+          document.data().likedBy &&
+            commentsByUser.push(document.data().likedBy.id);
+          document.data().comments &&
+            commentsByUser.push(document.data().comments.id);
         }
       });
+
+      setUser([...commentsByUser]);
     });
+  }, [reload]);
+
+  const handlePost = () => {
+    setReload(!reload);
+    console.log(user);
+    if (user?.includes(currentUser.uid)) {
+      getDocs(colRef).then((snapshot) => {
+        snapshot.docs.forEach((document) => {
+          const documentRef = doc(db, "users", document.id);
+
+          if (
+            document.data().CharacterId === id &&
+            (document.data().likedBy || document.data().comments)
+          ) {
+            updateDoc(documentRef, {
+              comments: { id: currentUser.uid, comment: comment },
+            });
+          } else if (
+            document.data().CharacterId === id &&
+            !document.data().comments
+          ) {
+            updateDoc(documentRef, {
+              comments: { id: currentUser.uid, comment: comment },
+            }).then((e) => {
+              console.log("liked");
+            });
+          }
+        });
+      });
+    } else {
+      console.log("here");
+      addDoc(colRef, {
+        CharacterId: id,
+        comments: { id: currentUser.uid, comment: comment },
+      }).then((e) => {
+        console.log("liked");
+      });
+    }
   };
 
   return (
-    <form>
-      <input value={comment} onChange={handleChange} />
-      <div>
-        <button
-          onClick={() => {
-            handlePost();
-          }}
-          type="button"
-          disabled={!comment}
-        >
-          Post
-        </button>
-        <button onClick={() => {}}>Cancel</button>
-      </div>
-    </form>
+    <>
+      <DetailBox>
+        <form>
+          <CommentInput value={comment} onChange={handleChange} />
+          <CommentButtons>
+            <Post
+              onClick={() => {
+                handlePost();
+              }}
+              type="button"
+              disabled={!comment}
+            >
+              Post
+            </Post>
+            <Cancel onClick={() => {}}>Cancel</Cancel>
+          </CommentButtons>
+        </form>
+      </DetailBox>
+    </>
   );
 };
 
+const DetailBox = styled.div`
+  width: 320px;
+  border: 1px solid lightblue;
+  margin: 50px;
+`;
+const CommentInput = styled.input`
+  border: none;
+  padding: 10px 20px;
+  height: 40px;
+  line-height: 40px;
+  background: white;
+  box-sizing: border-box;
+  border-radius: 5px;
+  margin: 10px 0px;
+  width: 100%;
+`;
+
+const CommentButtons = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1px;
+`;
+const Post = styled.button`
+  width: 50%;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+`;
+const Cancel = styled.button`
+  width: 50%;
+  height: 30px;
+  border: none;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+`;
 export default CommentPost;

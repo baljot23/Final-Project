@@ -11,12 +11,13 @@ const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  const signup = async (email, password, userName) => {
+  const signup = async (email, password, userName, photoURL) => {
     await auth
       .createUserWithEmailAndPassword(email, password)
       .then((result) => {
+        console.log(result);
         return result.user
-          .updateProfile({ displayName: userName })
+          .updateProfile({ displayName: userName, photoURL: photoURL })
           .catch(function (error) {
             console.log(error);
           });

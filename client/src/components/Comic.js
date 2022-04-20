@@ -23,20 +23,16 @@ const Comic = () => {
     fetch(`/comic/${id}`)
       .then((res) => res.json())
       .then((json) => {
-        // console.log(json);
         setSingleComic(json?.data);
       });
   }, []);
 
-  // console.log(singleComic);
   const colRef = collection(db, "users");
 
   useEffect(() => {
     getDocs(colRef).then((snapshot) => {
       let likedbyUsers = [];
-
       snapshot.docs.forEach((document) => {
-        console.log("hello");
         if (document.data().ComicId === id) {
           setDocRef(doc(db, "users", document.id));
           likedbyUsers.push(document.data().likedBy);
@@ -46,8 +42,6 @@ const Comic = () => {
       setUser([...likedbyUsers]);
     });
   }, [reload]);
-
-  console.log(docRef);
 
   const handleLike = () => {
     setReload(!reload);
@@ -71,7 +65,7 @@ const Comic = () => {
         {singleComic?.map((comic) => {
           console.log(comic);
           return (
-            <div key={comic.id}>
+            <div key={comic?.id}>
               <img
                 src={comic?.images[0]?.path + "." + comic?.images[0]?.extension}
               />

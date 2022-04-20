@@ -5,6 +5,7 @@ import {
   Route,
   useParams,
 } from "react-router-dom";
+import { useState } from "react";
 import Header from "./Header";
 import HomePage from "./HomePage";
 import Profile from "./Profile";
@@ -18,34 +19,108 @@ import Comic from "./Comic";
 import Signup from "./Form/Signup";
 import Login from "./Form/Login";
 import ForgotPassword from "./Form/ForgotPassword";
+import styled from "styled-components";
 
 const App = () => {
   return (
     <>
       <Router>
         <GlobalStyles />
-        <Header />
         <Routes>
-          <Route path="/signup" element={<Signup />} exact></Route>
+          <Route path="/" element={<Signup />} exact></Route>
           <Route path="/login" element={<Login />} exact></Route>
           <Route
             path="/forgot-password"
             element={<ForgotPassword />}
             exact
           ></Route>
-          <Route path="/" element={<HomePage />} exact></Route>
-          <Route path="/profile" element={<Profile />} exact></Route>
-          <Route path="/characters" element={<AllCharacters />} exact></Route>
-          <Route path="/character/:id" element={<Character />} exact></Route>
+          <Route
+            path="/home"
+            element={
+              <>
+                <Header />
+                <HomePage />
+              </>
+            }
+            exact
+          ></Route>
+          <Route
+            path="/profile"
+            element={
+              <>
+                {" "}
+                <Header />
+                <Profile />
+              </>
+            }
+            exact
+          ></Route>
+          <Route
+            path="/characters"
+            element={
+              <>
+                {" "}
+                <Header />
+                <AllCharacters />
+              </>
+            }
+            exact
+          ></Route>
+          <Route
+            path="/character/:id"
+            element={
+              <>
+                {" "}
+                <Header />
+                <Character />
+              </>
+            }
+            exact
+          ></Route>
           <Route
             path="/character/comic/:id"
-            element={<CharacterComic />}
+            element={
+              <>
+                {" "}
+                <Header />
+                <CharacterComic />
+              </>
+            }
             exact
           ></Route>{" "}
-          <Route path="/comics" element={<AllComics />} exact></Route>
-          <Route path="/comics/:id" element={<Comic />} exact></Route>
-          <Route path="/Series" element={<Series />}></Route>
-          <Route path="" element={<Error />}></Route>
+          <Route
+            path="/comics"
+            element={
+              <>
+                {" "}
+                <Header />
+                <AllComics />
+              </>
+            }
+            exact
+          ></Route>
+          <Route
+            path="/comics/:id"
+            element={
+              <>
+                {" "}
+                <Header />
+                <Comic />
+              </>
+            }
+            exact
+          ></Route>
+          <Route
+            path="/Series"
+            element={
+              <>
+                {" "}
+                <Header />
+                <Series />
+              </>
+            }
+          ></Route>
+          <Route path="*" element={<Error />}></Route>
         </Routes>
       </Router>
     </>

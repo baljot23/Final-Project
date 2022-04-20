@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import ComicCharacterProvider from "./components/ComicCharacterContext";
 import App from "./components/App";
 import AuthProvider from "./components/Form/AuthContext";
 
@@ -14,10 +13,8 @@ const root = createRoot(rootElement);
 
 root.render(
   <AuthProvider>
-    <ComicCharacterProvider>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </ComicCharacterProvider>
+    <StrictMode>
+      <App />
+    </StrictMode>
   </AuthProvider>
 );
